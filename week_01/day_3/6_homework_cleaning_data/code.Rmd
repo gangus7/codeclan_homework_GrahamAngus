@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+movie <- read_csv("data/movies.csv")
+```
+# Look at any names that might have been altered from original. 
+# Budget is made up of different numbers
+# Look to see if there is any relationship between running time and popularity
+# Is there relationship between revenue and release date 
+
+```{r}
+movies_selected <- movie %>%
+  select(title, runtime, budget)
+```
+
+```{r}
+movies_selected
+```
+```{r}
+movies_selected %>%
+  sum(is.na()
+```
+```{r}
+movies_selected %>%
+  summarise(count = sum(is.na(movies_selected)))
+```
+
+```{r}
+movies_selected %>% 
+  mutate(
+    runtime = na_if(runtime, 0)
+  )
+```
+```{r}
+movies_runtime <- movies_selected %>%
+  mutate(
+    runtime = na_if(runtime, 0)
+```
+```{r}
+movies_runtime
+```
+```{r}
+movies_runtime %>%
+  filter(is.na(runtime))
+```
+```{r}
+movies_selected %>%
+  select(budget) %>%
+  mutate(
+    budget_type = case_when(
+      budget < 12000000 ~ "small budget"
+      budget >= 12000000 <= 40000000 ~ "medium budget"
+    )
+  )
+  
+```
+```{r}
+movies_selected %>%
+  summarise(na_runtime = sum(is.na(runtime))),
+            na_title = sum(is.na(title)),
+            na_budget = sum(is.na(budget)))
+            
+```
+
