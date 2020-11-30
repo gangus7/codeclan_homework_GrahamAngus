@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+```{r}
+card_base <- read_csv("data/CardBase.csv")
+cust_base <- read_csv("data/CustomerBase.csv")
+fraud_base <- read_csv("data/FraudBase.csv") 
+trans_base <- read_csv("data/TransactionBase.csv")
+```
+
+```{r}
+
+card_base_clean <- clean_names(card_base)
+
+names(card_base_clean)
+
+cust_base_clean <- clean_names(cust_base)
+
+names(cust_base_clean)
+
+fraud_base_clean <- clean_names(fraud_base)
+
+names(fraud_base_clean)
+
+trans_base_clean <- clean_names(trans_base)
+
+names(trans_base_clean)
+
+names(cust_base_clean)
+```
+
+```{r}
+inner_join(card_base_clean, cust_base_clean, "cust_id")
+```
+
+```{r}
+full_join(fraud_base_clean, trans_base_clean)
+```
+```{r}
+semi_join(card_base_clean, trans_base_clean, by = character())
+```
+```{r}
+hat_data <- read_csv("data/hat_observations.csv")
+
+names(hat_data)
+```
+```{r}
+hat_data %>% 
+  separate(observation, c("hat_colour", "hat_type")
+     )
+
+hat_data
+```
+```{r}
+hat_data_unite <- hat_data %>%
+  unite(date, c("day", "month", "year"), sep = ":") %>%
+  arrange(desc(observation_count))
+
+hat_data_unite
+```
+
+
+
+
