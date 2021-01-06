@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+
+backpack <- CodeClanData::backpack
+
+glimpse(backpack)
+
+
+
+```
+
+```{r}
+ggplot(backpack) +
+ geom_bar(aes(x = backpack_weight, colour = sex))
+```
+
+
+```{r}
+ggplot(backpack) +
+ geom_point(aes(x = sex, y = backpack_weight, colour = sex))
+```
+
+```{r}
+ggplot(backpack) +
+  geom_point(aes(x = backpack_weight, y = body_weight, colour = sex)) +
+  geom_smooth(aes(x = backpack_weight, y = body_weight), method = "lm")             
+             
+```
+
+```{r}
+ggplot(backpack) +
+  geom_bar(aes(x = back_problems, fill = sex))
+  
+```
+
+
+```{r}
+ggplot(backpack) +
+  aes(x = backpack_weight, y = body_weight, group = back_problems, colour = sex) +
+  geom_point() +
+  facet_wrap(sex ~ back_problems) +
+  geom_smooth(
+    aes(x = backpack_weight, y = body_weight, colour = sex)
+  )
+```
+
+```{r}
+ggplot(backpack) +
+  geom_point(aes(x = major, y = ratio, colour = major))
+```
+
+```{r}
+ggplot(backpack) +
+  aes(x = year, y = body_weight, fill = back_problems) +
+  geom_point() +
+  scale_x_continuous(
+    limits = c(1, 6)
+  )
+
+```
+
+```{r}
+ggplot(backpack) +
+  aes(x = year, y = backpack_weight, fill = back_problems) +
+  geom_point() +
+  scale_x_continuous(
+    limits = c(1, 6)
+  )
+```
+
