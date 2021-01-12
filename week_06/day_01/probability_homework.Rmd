@@ -1,0 +1,70 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(prob)
+library(gtools)
+library(tidyverse)
+
+titanic_data <- read_csv("data/titanic.csv")
+
+unique(titanic_data$class)
+
+crew <- filter(titanic_data, class == "deck crew" | class == "engineering crew" | class == "victualling crew" | class == "restaurant staff")
+
+filter(crew, survived == "no")
+
+passengers <- filter(titanic_data, class == "1st" | class == "2nd" | class == "3rd")
+
+filter(passengers, survived == "no")
+```
+
+# 1st class 324, 2nd 284, 3rd 709. 500 survived, 0.379 probability of passengers surviving
+
+#890 crew. 211 survived 0.237 probability of crew surviving 
+```{r}
+
+rolldie(4) 34/1296
+
+
+
+rolldie(4) %>%
+  mutate(num_dice = rowSums(., X1 + X2 + X3 + X4)) %>%
+filter(num_dice == 5 | num_dice == 6 | num_dice == 7)
+  
+```
+
+```{r}
+permutations(
+  n = 5,
+  r = 5
+)
+
+1/120
+```
+
+
+```{r}
+rolldie(6) %>%
+  mutate(num_dice = rowSums(., X1:X6)) %>%
+filter(num_dice == 21)
+
+4332/46656
+```
+
+```{r}
+
+```
+
+
+
+
+# 1. 2/3 chance of getting a number less than 5
+# 2. 216 different outcomes
+# 3. 34 outcomes, 0.02623457, all the dice are fair
+# 4. 0.008333333
+# 5. 0.00002143347, 0.09284979
+# 6. 0.5
+# 7. 
