@@ -1,0 +1,93 @@
+---
+title: "distributions_homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+
+dist_data <- read_csv("data/20190928-items.csv") %>%
+clean_names()
+
+unique(dist_data$brand)
+
+dist_data %>%
+  filter(brand == "Samsung")
+#397
+
+dist_data %>%
+  filter(brand == "Motorola")
+
+#100
+
+dist_data %>%
+  filter(brand == "Nokia")
+
+#49
+
+dist_data %>%
+  filter(brand == "Sony")
+
+#29
+
+dist_data %>%
+  filter(brand == "HUAWEI")
+
+#36
+
+dist_data %>%
+  filter(brand == "Apple")
+
+#101
+
+dist_data %>%
+  filter(brand == "OnePlus")
+
+#7
+
+dist_data %>%
+  filter(brand == "Google")
+
+#33
+
+dist_data %>%
+  filter(brand == "ASUS")
+
+#13
+
+dist_data %>%
+  filter(brand == "Xiaomi")
+
+#27
+
+#Samsung is the most popular Brand
+```
+
+```{r}
+samsung <- dist_data %>%
+  filter(brand == "Samsung")
+
+
+
+samsung %>%
+  summarise(mean_total_ratings = mean(total_reviews))
+```
+```{r}
+samsung %>%
+  ggplot(aes(x = total_reviews)) +
+  geom_density() +
+  stat_function(
+    fun = dnorm, 
+    args = list(
+      mean = accounts_salary_stats$mean, 
+      sd = accounts_salary_stats$sd
+    ),
+    col = "red"
+  )
+```
+```{r}
+samsung %>%
+  summarise(sd = sd(total_reviews))
+```
+
