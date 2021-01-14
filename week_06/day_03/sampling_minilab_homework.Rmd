@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# We are going to use a dataset on house sales in Ames, Iowa over a number of years. We will be interested in the SalePrice of houses (though we should clean_names() the data, so this will end up as sale_price). Load the data and explore it.
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(infer)
+
+ames <- read_csv("data/ames.csv") %>%
+  clean_names()
+
+```
+
+# Plot a histogram of sale_price. Is the distribution normal?
+
+```{r}
+ames %>%
+  mutate(sale_price = sale_price/1000) %>%
+  ggplot(aes(x = sale_price)) +
+           geom_histogram(col = "white", fill = "blue") +
+  ylab("Sale price (1000 units)")
+           
+```
+# Calculate the population parameter mean of sale_price. Store it in a variable, as we’ll need this value later when we check if each CI contains the parameter value or not.
+```{r}
+summary_prices <- ames %>%
+  summarise(mean_sale_price = mean(sale_price))
+            
+summary_prices
+```
+# Now we are going to:
+
+    take 1000
+
+random samples each of size 100
+from sale_price in ames
+create a boostrap sampling distribution of mean(sale_price) from each 100
+-observation sample (use 1000 reps)
+calculate the 95%
+
+        CI for each bootstrap distribution
+        store the upper and lower bounds of the CI in a tibble called results
+
+Use the infer workflow to generate the bootstrap distributions and CIs. This code will be pretty hard to write. Think about wrapping the sample creation and infer code in a for loop to generate 1000
+random samples and CIs. Create an empty results tibble before the loop, and bind_rows() to it every time you generate a new set of CI bounds.
+
+```{r}
+sample_100 <- ames %>%
+  rep_sample_n(size = 100, replace = TRUE, reps = 1000)
+
+summary_sample_100 <- sample_100 %>%
+  ungroup() %>%
+  summarise(mean_sale_price = mean(sale_price))
+
+summary_sample_100
+```
+
+```{r}
+ci_95 <- summary_sample_100 %>%
+  summarise(
+    mean = mean(mean_sale_price),
+    lower_bound = quantile(mean_sale_price, probs = 0.025),
+    upper_bound = quantile(mean_sale_price, probs = 0.975)
+  )
+
+ci_95
+```
+
+
+
+
+
+
+
