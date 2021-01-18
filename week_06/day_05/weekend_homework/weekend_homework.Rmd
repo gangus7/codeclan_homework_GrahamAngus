@@ -1,0 +1,177 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+msleep <- data(msleep)
+
+msleep <- ggplot2::msleep
+```
+
+```{r}
+summary_popn <- msleep %>%
+           summarise(
+             mean_sleep_total = mean(sleep_total)
+           )
+
+summary_popn
+```
+```{r}
+msleep %>%
+  ggplot(aes(x = sleep_total)) +
+  geom_histogram(col = "white", fill = "steel blue")
+
+library(infer)
+```
+```{r}
+msleep %>%
+  summarise(
+    sd = sd(sleep_total)
+  )
+```
+
+
+
+
+
+
+
+
+```{r}
+
+rep_sample_50 <- msleep %>%
+  rep_sample_n(size = 50, reps = 5000) %>%
+  summarise(
+    mean_sleep_total = mean(sleep_total)
+  )
+
+rep_sample_50
+
+```
+
+```{r}
+mean_sleep_total_plot <- rep_sample_50 %>%
+  ggplot(aes(x = mean_sleep_total)) +
+  geom_histogram(col = "white", fill = "steel blue") +
+  labs(x = "mean sleep_total")
+
+mean_sleep_total_plot
+```
+
+```{r}
+stand_errors <- rep_sample_50 %>%
+  summarise(
+    se_mean_total_sleep = sd(mean_sleep_total)
+  )
+
+stand_errors
+
+library(fastGraph)
+```
+
+```{r}
+shadeDist(
+  xshade = c(9, 12), 
+  lower.tail = FALSE, 
+  ddist = "dnorm", 
+  parm1 = mean(rep_sample_50$mean_sleep_total), 
+  parm2 = stand_errors$se_mean_sleep_total, 
+  xlab = "mean_sleep_total"
+)
+```
+
+```{r}
+omnivores <- msleep %>%
+  filter(vore == "omni")
+
+omnivores
+
+herbivores <- msleep %>%
+  filter(vore == "herbi")
+
+herbivores
+```
+```{r}
+omnivores %>%
+  summarise(
+    mean_sleep_total = mean(sleep_total)
+  )
+```
+```{r}
+herbivores %>%
+  summarise(
+    mean_sleep_total = mean(sleep_total)
+  )
+```
+```{r}
+bootstrap_resample_30 <- herbivores %>%
+  rep_sample_n(size = 30, replace = TRUE, reps = 5000) %>%
+  summarise(mean_sleep = mean(sleep_total))
+
+bootstrap_resample_30
+```
+
+```{r}
+bootstrap_resample_30 %>%
+  ggplot(aes(x = mean_sleep)) +
+  geom_histogram(col = "white", fill = "blue")
+```
+
+```{r}
+standard_errors <- bootstrap_resample_30 %>%
+  summarise(se_tenure = sd(mean_sleep))
+           
+
+standard_errors
+```
+```{r}
+ci_30 <- bootstrap_resample_30 %>%
+  summarise(mean_bootstrap = mean(mean_sleep),
+            lower_bound = quantile(mean_sleep, 0.05),
+upper_bound = quantile(mean_sleep, 0.95))
+
+ci_30
+```
+```{r}
+infer_sample <- herbivores %>%
+  specify(response = sleep_total) %>%
+  generate(reps = 5000, type = "bootstrap") %>%
+  calculate(stat = "mean")
+```
+
+```{r}
+infer_ci <- infer_sample %>%
+  get_confidence_interval(level = 0.95, type = "percentile")
+```
+
+```{r}
+infer_sample %>%
+  visualise(bins = 30) +
+  shade_confidence_interval(endpoints = infer_ci)
+```
+
+```{r}
+is_domesticated <- msleep %>%
+  filter(conservation == "domesticated")
+
+is_domesticated
+```
+
+```{r}
+bootstrap_resample_10 <- is_domesticated %>%
+  rep_sample_n(size = 10, replace = TRUE, reps = 5000) %>%
+  summarise(mean_tenure = mean(tenure))
+
+bootstrap_resample_200
+```
+
+
+# Q1 - H0: μaverage_rating > 0.4 - Ha: μaverage_rating < 0.4 , I would use a bootstrap to find null distribution
+
+# Q2 - μtest_A_ctr < μtestB_ctr and use simulation 
+
+# Q3 - H0: μwidth=145 Ha: μwidth≠145 I would use bootstrap for null distribution
+
+
