@@ -68,6 +68,11 @@ dist_data %>%
 samsung <- dist_data %>%
   filter(brand == "Samsung")
 
+dist_data %>%
+  group_by(brand) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
 
 
 samsung %>%

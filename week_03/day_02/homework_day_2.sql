@@ -17,10 +17,10 @@ employees.first_name,
 employees.last_name,
 teams.name,
 teams.charge_cost 
-FROM employees LEFT JOIN teams
-WHERE charge_cost > 80
+FROM employees INNER JOIN teams
 ON employees.team_id = teams.id
-ORDER BY employees.last_name;
+WHERE cast(teams.charge_cost AS int) > 80
+ORDER BY employees.last_name ASC NULLS LAST;
 
 /* Breakdown the number of employees in each of the teams, including any teams without members. 
  * Order the table by increasing size of team. */ 
@@ -31,5 +31,14 @@ COUNT(employees.team_id)
 FROM teams INNER JOIN employees 
 GROUP BY teams.name;
 
+
+SELECT 
+id, 
+first_name, 
+last_name,
+salary, 
+fte_hours * salary AS effective_salry 
+SUM(fte_hours * salary) OVER (order by fte_hours * salary ASC NULLS LAST)
+FROM employees;
 
 

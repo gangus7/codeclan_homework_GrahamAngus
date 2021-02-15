@@ -63,6 +63,16 @@ hat_data_unite <- hat_data %>%
 
 hat_data_unite
 ```
+```{r}
+comb_join <- inner_join(card_base_clean, cust_base_clean, "cust_id")
+
+comb_joined <- inner_join(trans_base_clean, fraud_base_clean, "transaction_id")
+
+comb_both <- inner_join(comb_join, comb_joined, by = c("cust_id" = "transaction_id"))
+
+comb_both
+
+```
 
 
 

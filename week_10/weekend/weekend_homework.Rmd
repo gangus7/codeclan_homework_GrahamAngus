@@ -1,0 +1,223 @@
+---
+title: "Weekend Homework"
+output: html_notebook
+---
+
+
+
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(modelr)
+library(janitor)
+library(lubridate)
+library(ggfortify)
+
+
+avocados <- read_csv("data/avocado.csv")
+```
+
+```{r}
+
+avocados <- clean_names(avocados)
+dim(avocados)
+```
+```{r}
+unique(avocados$type)
+```
+```{r}
+unique(avocados$region)
+```
+```{r}
+unique(avocados$year)
+```
+
+```{r}
+avo_regionless <- avocados %>%
+  select(-c("x1", "region", "date", "small_bags", "large_bags", "x_large_bags", "x4046", "x4225", "x4770"))
+
+ggpairs(avo_regionless)
+```
+```{r}
+avocados %>%
+  group_by(region) %>%
+  summarise(mean(average_price)) 
+  
+  
+```
+
+```{r}
+model <- lm(average_price ~ region, data = avocados)
+summary(model)
+```
+```{r}
+autoplot(model)
+```
+```{r}
+avocados <- avocados %>% 
+  mutate(Date = as.Date(date, origin="1899-12-30"), 
+         Month = month(date))
+
+avocados_tidy <- avocados %>%
+  select(-c("date", "Date", "x1"))
+
+sum(avocados_tidy$total_volume)
+# 15523402593
+
+sum(avocados_tidy$x4046)
+# 5347110739
+
+sum(avocados_tidy$x4225) 
+# 5386275718
+
+sum(avocados_tidy$x4770)
+# 416802342
+
+sum(avocados_tidy$total_bags)
+# 4373175798
+
+sum(avocados_tidy$small_bags)
+# 3324870838
+
+sum(avocados_tidy$large_bags)
+# 991615771
+
+sum(avocados_tidy$x_large_bags)
+# 56689177
+
+
+
+```
+
+```{r}
+alias(lm(average_price ~ ., data = avocados_tidy))
+```
+
+```{r}
+avocados_tidy %>%
+  group_by(region) %>%
+  summarise(sum = sum(total_volume)) %>%
+  arrange(desc(sum))
+  
+avocados 
+  
+```
+
+```{r}
+avocados_tidy %>%
+  select(-"region") %>%
+  ggpairs()
+```
+
+```{r}
+model1 <- lm(average_price ~ Month, data = avocados_tidy)
+
+summary(model1)
+```
+
+```{r}
+model2 <- lm(average_price ~ total_volume, data = avocados_tidy)
+
+summary(model2)
+```
+
+```{r}
+model3 <- lm(average_price ~ type, data = avocados_tidy)
+
+summary(model3)
+```
+
+
+```{r}
+model4 <- lm(average_price ~ total_bags, data = avocados_tidy)
+
+summary(model4)
+```
+```{r}
+model5 <- lm(average_price ~ year, data = avocados_tidy)
+
+summary(model5)
+```
+```{r}
+model6 <- lm(average_price ~ x4046, data = avocados_tidy)
+
+summary(model6)
+```
+
+```{r}
+model7 <- lm(average_price ~ x4225, data = avocados_tidy)
+
+summary(model7)
+```
+
+```{r}
+model8 <- lm(average_price ~ region, data = avocados_tidy)
+
+summary(model8)
+```
+```{r}
+model9 <- lm(average_price ~ x4770, data = avocados_tidy)
+
+summary(model9)
+```
+```{r}
+model10 <- lm(average_price ~ small_bags, data = avocados_tidy)
+
+summary(model10)
+```
+```{r}
+model11 <- lm(average_price ~ large_bags, data = avocados_tidy)
+
+summary(model11)
+```
+```{r}
+model12 <- lm(average_price ~ x_large_bags, data = avocados_tidy)
+
+summary(model12)
+```
+
+```{r}
+model13 <- lm(average_price ~ region + type, data = avocados_tidy)
+
+summary(model13)
+```
+
+```{r}
+autoplot(model13)
+```
+
+```{r}
+summary(model13)
+```
+```{r}
+anova(model13, model14)
+```
+
+```{r}
+model14 <- lm(average_price ~ type, data = avocados_tidy)
+```
+
+```{r}
+avocados_remaining_resid <- avocados_tidy %>%
+  add_residuals(model13) %>%
+  select(-c("average_price", "type", "region"))
+
+avocados_remaining_resid %>%
+  select(-c("small_bags", "large_bags", "x_large_bags")) %>%
+  ggpairs(aes(alpha = 0.5))
+```
+
+
+```{r}
+avocados_remaining_resid %>%
+  select(-c("x4046", "x4225", "x4770")) %>%
+  ggpairs(aes(alpha = 0.5))
+```
+
+```{r}
+avocados_remaining_resid %>%
+  select(-c("total_bags", "year", "total_volume", "Month", )) %>%
+  ggpairs(aes(alpha = 0.5))
+```
+

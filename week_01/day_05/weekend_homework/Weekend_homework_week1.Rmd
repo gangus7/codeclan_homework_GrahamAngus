@@ -1,0 +1,80 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+read_csv("data/books.csv")
+
+good_reads <- read_csv("data/books.csv")
+
+dim(good_reads)
+
+#8472 rows, 12 columns
+
+names(good_reads)
+
+#column titles look fine
+
+head(good_reads)
+
+glimpse(good_reads)
+
+
+view(good_reads)
+
+good_reads %>%
+   summarise(count = sum(is.na(good_reads)))
+
+good_reads %>%
+  summarise(across(.fns = ~sum(is.na(good_reads))))
+# 14 NAs in total 
+good_reads %>%
+  filter(is.na(title))
+
+good_reads %>%
+  drop_na()
+
+# dropped missing values 
+
+```
+```{r}
+good_reads %>% 
+  select(authors) %>% 
+  group_by(authors) %>% 
+  summarise(authors_count = n()) %>% 
+  arrange(desc(authors_count))
+
+# Looking at most frequent author 
+```
+
+```{r}
+good_reads %>% 
+  select(publisher) %>% 
+  group_by(publisher) %>% 
+  summarise(publisher_count = n()) %>% 
+  arrange(desc(publisher_count))
+
+#most frequent publisher 
+```
+```{r}
+good_reads %>%
+  select(title, num_pages) %>%
+  group_by(num_pages) %>%
+  arrange(desc(num_pages))
+
+#Find out longest book
+
+
+
+```
+```{r}
+books_data_nozeroes <- good_reads
+books_data_nozeroes[books_data_nozeroes$num_pages == 0,]
+```
+```{r}
+
+```
+

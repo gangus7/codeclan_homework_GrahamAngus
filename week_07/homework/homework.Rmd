@@ -1,0 +1,239 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tsibbledata)
+library(tidyverse)
+library(lubridate)
+nyc <- tsibbledata::nyc_bikes
+nyc_bikes_df <- nyc
+
+
+nyc_bikes_df_summ_month <-
+  nyc_bikes_df %>%
+  index_by(month)
+
+
+```
+
+
+```{r}
+nyc_bikes_sum <-
+  nyc_bikes_df %>%
+  mutate(year = year(start_time)) %>%
+  mutate(month = month(start_time)) %>%
+  mutate(day = day(start_time)) %>%
+  group_by(month) %>%
+  summarise(hire_count = n())
+
+nyc_bikes_sum
+
+  
+  
+```
+
+```{r}
+nyc_bikes_plot <-
+  nyc_bikes_df %>%
+  mutate(year = year(start_time)) %>%
+  mutate(month = month(start_time)) %>%
+  mutate(day = day(start_time)) %>%
+  group_by(hour_start) %>%
+  summarise(hire_count = n())
+
+
+
+```
+
+```{r}
+nyc_bikes_df <-
+nyc_bikes_df %>% 
+  mutate(
+    start_date = make_datetime(year = year, month = month, day = day)
+  )
+```
+
+```{r}
+nyc_bikes_plot %>%
+  arrange(desc(hire_count))
+```
+
+
+```{r}
+summarise(nyc_bikes_plot, mean_count = mean(hire_count))
+```
+
+
+```{r}
+nyc_bikes_df %>%
+  group_by(gender, type) %>%
+  summarise(mean_duration = mean(diff_in_mins))
+```
+
+
+
+```{r}
+library(slider)
+
+nyc_bike_slider <-
+nyc_bikes_df %>%
+  mutate(year = year(start_time)) %>%
+  mutate(month = month(start_time)) %>%
+  mutate(day = day(start_time)) %>%
+  mutate(start_date) %>%
+  summarise(hire_count = n())
+  
+```
+
+
+
+```{r}
+nyc_bikes_df %>%
+  ggplot(aes(x = day_start, y = hire_count, colour = hire_count)) +
+  geom_point() +
+  scale_colour_gradient2(midpoint = 12, low = "red", high = "green", mid = "orange") 
+  geom_line(group = 1) 
+  
+  # 10 bikes
+  # 52 stations
+  
+  
+```
+
+```{r}
+nyc_gender <- nyc_bikes_df %>% 
+  group_by(gender, type) %>%
+  summarise(count = n())
+
+nyc_gender
+
+
+
+ 
+  
+```
+
+
+```{r}
+ggplot(nyc_gender) +
+  geom_col(aes(x = gender, y = count, fill = type))
+```
+
+```{r}
+nyc_bikes_df$diff_in_mins <- difftime(nyc_bikes_df$stop_time, nyc_bikes_df$start_time, units = c("mins"))
+```
+
+```{r}
+
+nyc_bikes_df %>%
+  ggplot() +
+  aes(x = birth_year, y = diff_in_mins, colour = gender) +
+  geom_point() +
+  scale_x_continuous(limits = c(1945, 2000)) +
+  scale_y_continuous(limits = c(1, 75)) +
+  ylab("Duration") +
+  xlab("Birth Year") +
+  facet_wrap(~ gender)                    
+```
+
+
+```{r}
+nyc_bikes_df %>%
+  group_by(gender) %>%
+summarise(mode_age = median(birth_year))
+```
+
+```{r}
+
+  nyc_bikes_sum <-
+  nyc_bikes_df %>%
+  mutate(gender = gender) %>%
+  mutate(month = month(start_time)) 
+  
+nyc_bikes_sum %>%
+  group_by(gender, month) %>%
+  summarise(count = n())
+
+nyc_bikes_sum
+```
+
+
+
+```{r}
+nyc_bikes_df <-
+  nyc_bikes_df %>% mutate(nyc_bikes_df$start_time, hour_start = format(nyc_bikes_df$start_time, format = "%H"))
+
+nyc_bikes_df
+
+
+```
+
+
+```{r}
+library(leaflet)
+
+library(scales)
+nyc_bikes_df %>%
+ggplot() +
+  aes(x = hour_start, colour = gender) +
+  geom_bar(position = "dodge") 
+```
+
+```{r}
+nyc_cycle_map <- leaflet() %>%
+  addTiles() %>%  
+  addMarkers(lng = head_bikes$start_long, lat = head_bikes$start_lat)
+nyc_cycle_map
+
+
+```
+
+
+```{r}
+ggplot(nyc_bikes_df) +
+  aes(x = start_long, y = start_lat) +
+  geom_point()
+```
+
+```{r}
+head_bikes <-
+nyc_bikes_df %>%
+head(nyc_bikes_df, n = 40)
+```
+
+
+
+```{r}
+library(tidyverse)
+library(fable)
+library(tsibble)
+library(tsibbledata)
+
+hours <- 
+  nyc_bikes_plot %>%
+  select(hour_start, hire_count)
+
+nyc_bikes_plot %>%
+  autoplot()
+  
+  ggplot() +
+  aes(x = hour_start, y = hire_count) +
+  geom_forecast()
+  
+  
+
+
+
+```
+
+```{r}
+
+```
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+meteor_clean_col %>%
+  arrange(desc(mass_g))
+```
+```{r}
+meteor_found <- 
+  filter(meteor_clean_col, fall == "Found")
+
+meteor_fell <-
+  filter(meteor_clean_col, fall == "Fell")
+
+meteor_found
+
+average_found <- meteor_found %>%
+  summarise(avg_val = mean(mass_g, na.rm = TRUE))
+
+average_found
+
+meteor_fell
+
+average_fell <- meteor_fell %>%
+  summarise(avg_val = mean(mass_g, na.rm = TRUE))
+
+
+average_fell
+```
+```{r}
+average_found
+```
+```{r}
+filter(meteor_clean_col, year == "2000")
+```
+```{r}
+filter(meteor_clean_col, year == "2001")
+```
+```{r}
+filter(meteor_clean_col, year == "2002")
+```
+```{r}
+filter(meteor_clean_col, year == "2003")
+```
+```{r}
+filter(meteor_clean_col, year == "2004")
+```
+```{r}
+filter(meteor_clean_col, year == "2005")
+```
+```{r}
+filter(meteor_clean_col, year == "2006")
+```
+```{r}
+filter(meteor_clean_col, year == "2007")
+```
+```{r}
+filter(meteor_clean_col, year == "2008")
+```
+```{r}
+filter(meteor_clean_col, year == "2009")
+```
+```{r}
+filter(meteor_clean_col, year == "2010")
+```
+```{r}
+filter(meteor_clean_col, year == "2011")
+```
+```{r}
+filter(meteor_clean_col, year == "2012")
+```
+```{r}
+filter(meteor_clean_col, year == "2013")
+```
+```{r}
+filter(meteor_clean_col, year == "2014")
+```
+```{r}
+filter(meteor_clean_col, year == "2015")
+```
+
+```{r}
+filter(meteor_clean_col, year == "2016")
+```
+```{r}
+filter(meteor_clean_col, year == "2017")
+```
+```{r}
+filter(meteor_clean_col, year == "2018")
+```
+```{r}
+filter(meteor_clean_col, year == "2019")
+```
+```{r}
+filter(meteor_clean_col, year == "2020")
+```
+```{r}
+
+```
+

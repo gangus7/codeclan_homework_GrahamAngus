@@ -64,6 +64,7 @@ ggplot(competitors) +
 ```{r}
 ggplot(competitors) +
   geom_line() +
+  geom_point() +
   aes(x = Year, y = Revenue, colour = Company) +
   facet_wrap(~ Company)
 ```

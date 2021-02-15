@@ -1,0 +1,146 @@
+# NYC Bike Hire Analysis 
+## By Graham Angus 
+
+**Introduction**
+
+
+```{r}
+library(tsibbledata)
+library(tidyverse)
+library(lubridate)
+library(leaflet)
+library(slider)
+library(scales)
+
+nyc <- tsibbledata::nyc_bikes
+nyc_bikes_df <- nyc
+
+nyc_bikes_sum <-
+  nyc_bikes_df %>%
+  mutate(year = year(start_time)) %>%
+  mutate(month = month(start_time)) %>%
+  mutate(day = day(start_time)) %>%
+  group_by(month) %>%
+  summarise(hire_count = n())
+
+nyc_bikes_df <-
+  nyc_bikes_df %>% mutate(nyc_bikes_df$start_time, hour_start = format(nyc_bikes_df$start_time, format = "%H"))
+
+nyc_bikes_plot <-
+  nyc_bikes_df %>%
+  mutate(year = year(start_time)) %>%
+  mutate(month = month(start_time)) %>%
+  mutate(day = day(start_time)) %>%
+  group_by(hour_start) %>%
+  summarise(hire_count = n())
+
+nyc_gender <- nyc_bikes_df %>% 
+  group_by(gender, type) %>%
+  summarise(count = n())
+
+nyc_bikes_df$diff_in_mins <- difftime(nyc_bikes_df$stop_time, nyc_bikes_df$start_time, units = c("mins"))
+
+head_bikes <-
+nyc_bikes_df %>%
+head(nyc_bikes_df, n = 40)
+
+nyc_cycle_map <- leaflet() %>%
+  addTiles() %>%  
+  addMarkers(lng = head_bikes$start_long, lat = head_bikes$start_lat)
+
+nyc_bikes_df %>%
+  ggplot() +
+  aes(x = birth_year, y = diff_in_mins, colour = gender) +
+  geom_point() +
+  scale_x_continuous(limits = c(1945, 2000)) +
+  scale_y_continuous(limits = c(1, 75)) +
+  ylab("Duration") +
+  xlab("Birth Year") +
+  facet_wrap(~ gender)    
+
+
+
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+
+```{r}
+
+
+nyc <- tsibbledata::nyc_bikes
+nyc_bikes_df <- nyc
+```
+
+**The Gender Divide **
+
+
+```{r}
+# Citi Bike stated goals are Save money, Save Time, Have Fun, Get Exercise, Go green
+
+ggplot(nyc_gender) +
+  geom_col(aes(x = gender, y = count, fill = type))
+
+# 23% of users are female
+
+nyc_bikes_df %>%
+  group_by(gender, type) %>%
+  summarise(mean_duration = mean(diff_in_mins))
+
+# The mean duration for females is 14mins, for men it is 7mins
+
+nyc_bikes_df %>%
+  ggplot() +
+  aes(x = birth_year, y = diff_in_mins, colour = gender) +
+  geom_point() +
+  scale_x_continuous(limits = c(1945, 2000)) +
+  scale_y_continuous(limits = c(1, 75)) +
+  ylab("Duration") +
+  xlab("Birth Year") +
+  facet_wrap(~ gender)  
+
+# Age skewed to lower limit
+
+nyc_bikes_df %>%
+  group_by(gender) %>%
+summarise(mode_age = median(birth_year))
+
+# Median age for females is 34, 33 for men
+
+library(scales)
+nyc_bikes_df %>%
+ggplot() +
+  aes(x = hour_start, colour = gender) +
+  geom_bar(position = "dodge") 
+
+# 8am and 6pm are the two peak hours for both genders.
+
+nyc_cycle_map <- leaflet() %>%
+  addTiles() %>%  
+  addMarkers(lng = head_bikes$start_long, lat = head_bikes$start_lat)
+nyc_cycle_map
+
+# Most popular areas for pick up
+
+```
+
+# Conclusion
+
+There is a big gender divide in the companies users and with further inspection I 
+have found that the 4 main reasons for woman not cycling are Appearance, 
+traffic/intimidation, their age, lack of fitness. 
+
+I suggest that a good way to meet the aims of the company would be to try to 
+engage female users via solutions to incentivise off peak cycling, potentially 
+looking at learn to ride sessions and off peak memberships for those of a certain
+age and female friendly seats.
+
+If they really want to meet these aims then they could do worse than offering 
+support to younger females as 79% of NYC under 16s know how to ride a bike compared
+to 91% of males, fixing this end of the pipeline with some early community engagement 
+could be huge for the company.
+
+Only 1.1% of NYC residents regularly commute via bike, the duration figures and 
+the travel patterns suggest this is the main demographic of Citi Bike, there is 
+a potenially lucrative market from Tourist users which again could fill up the 
+off peak timetable. 
