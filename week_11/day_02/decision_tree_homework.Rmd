@@ -128,9 +128,9 @@ confusionMatrix(titanic_test_pred$pred, titanic_test_pred$survived_flag)
 ```
 
 # My decision tree shows that Females from a lower class had a 0.95 probability 
-of dying, females in general had a 0.76 probability of dying, men had a 0.21 
+of dying, females in general had a 0.76 probability of surviving, men had a 0.21 
 probability. If you had siblings you had 0.30 probability of dying and if you didn't
-then a 0.57 probability. This shows that men had a greater chance of surviving, if you
+then a 0.57 probability. This shows that women had a greater chance of surviving, if you
 had siblings also improved your chances maybe as kids were a priority for getting onto
 lifeboats, class also had a massive bearing on outcome.
 

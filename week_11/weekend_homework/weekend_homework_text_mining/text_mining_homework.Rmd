@@ -1,0 +1,59 @@
+---
+title: "text mining homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(janeaustenr)
+
+pride_book <- tibble(
+  id = 1:length(prideprejudice),
+  text = prideprejudice
+) %>% 
+  unnest_tokens(word, text)
+
+pride_book
+
+
+```
+
+```{r}
+pride_book %>%
+  count(word, sort = TRUE)
+```
+
+```{r}
+pride_book %>%
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+```
+
+
+
+```{r}
+sense_book <- tibble(
+  id = 1:length(sensesensibility),
+  text = sensesensibility
+) %>% 
+  unnest_tokens(word, text)
+
+sense_book
+```
+
+```{r}
+sense_book %>%
+  count(word, sort = TRUE)
+```
+
+```{r}
+sense_book %>%
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+```
+
+```{r}
+
+```
+
